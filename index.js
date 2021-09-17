@@ -1,3 +1,12 @@
+-const fs = require("fs");
+ 
+// асинхронное чтение
+fs.readFile("ppl.csv", "utf8", 
+            function(error,data){
+                if(error) throw error; // если возникла ошибка
+                console.log(data);  // выводим считанные данные
+});
+
 const fs = require('fs');
 const parse = require('csv-parse');
 const async = require('async');
