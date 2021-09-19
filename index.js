@@ -1,38 +1,38 @@
-1,25 +1,12
 const fs = require("fs");
- 
-// асинхронное чтение
-fs.readFile("ppl.csv", "utf8", 
-            function(error,data){
-                if(error) throw error; // если возникла ошибка
-                console.log(data);  // выводим считанные данные
-});
 
-// const fs = require('fs');
-// const parse = require('csv-parse');
-// const async = require('async');
+var data = fs.readFileSync('ppl.csv','utf8');
+data = data.replace(/;/g,' ').split("\r\n");
 
-// const inputFile='ppl.csv';
+let ludi = [];
 
-// const parser = parse(gender, function (err, data) {
-//   async.eachSeries(data, function (line, callback) {
-//     // do something with the line
-//     doSomething(line).then(function() {
-//       // when processing finishes invoke the callback to move to the next one
-//       callback();
-//     });
-//   })
-// });
-// fs.createReadStream(inputFile).pipe(parser);
-function convertCSV2Array(data, delimiter = ',', firstRow = false)
-{
-  return data
-    .slice(firstRow ? data.indexOf('\n') + 1 : 0)
-    .split('\n')
-    .map(row => row.split(delimiter));
+class Person{
+  constructor(name, surname, gender, bd){
+    this.name = name;
+    this.surname = surname;
+    this.passname = `${name[0]}. ${surname}`;
+    this.bd = bd;
+    this.gender = gender;
+  }
 }
-console.log(convertCSV2Array(
-    '1, Название1, Значение1, Дата1\n' +
-    '2, Название2, Значение2, Дата2\n' +
-    '3, Название3, Значение3, Дата3\n'
-));
+
+for(let i = 0; i < data.length; i++){
+  const el = data[i].split(' ');
+  const person = new Person(...el);
+  ludi.push(person)
+}
+ 
+ludi.shift()
+
+let filteredpass = []
+ludi.forEach(function(el){
+  const passdata = {passname: el.passname, bd: el.bd};
+  filteredpass.push(passdata);
+})
+
+filteredpass.sort(function(y, z){
+  return new Date(y.bd)-new Date(z.bd)
+})
+
+filteredpass.forEach(function(el){
+  console.log(`|${el.passname}| |${el.bd.replace(/-/g,'.')}|`);
+})
